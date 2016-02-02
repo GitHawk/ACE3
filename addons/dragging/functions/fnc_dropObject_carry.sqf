@@ -31,7 +31,7 @@ detach _target;
 
 // fix anim when aborting carrying persons
 if (_target isKindOf "CAManBase" || {animationState _unit in CARRY_ANIMATIONS}) then {
-    if (vehicle _unit == _unit && {!(_unit getvariable ["ACE_isUnconscious", false])}) then {
+    if (vehicle _unit == _unit && {!(_unit getVariable ["ACE_isUnconscious", false])}) then {
         [_unit, "", 2, true] call EFUNC(common,doAnimation);
     };
 
@@ -48,7 +48,7 @@ _unit removeWeapon "ACE_FakePrimaryWeapon";
 // reselect weapon and re-enable sprint
 _unit selectWeapon primaryWeapon _unit;
 
-[_unit, "isDragging", false] call EFUNC(common,setforceWalkStatus);
+[_unit, "forceWalk", "ACE_dragging", false] call EFUNC(common,statusEffect_set);
 
 // prevent object from flipping inside buildings
 if (_inBuilding) then {

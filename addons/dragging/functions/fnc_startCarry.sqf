@@ -53,7 +53,7 @@ if (_target isKindOf "CAManBase") then {
     _unit action ["SwitchWeapon", _unit, _unit, 99];
     [_unit, "AmovPercMstpSnonWnonDnon", 0] call EFUNC(common,doAnimation);
 
-    [_unit, "isDragging", true] call EFUNC(common,setforceWalkStatus);
+    [_unit, "forceWalk", "ACE_dragging", true] call EFUNC(common,statusEffect_set);
 
 };
 
@@ -61,7 +61,7 @@ if (_target isKindOf "CAManBase") then {
 [_unit, _target, true] call EFUNC(common,claim);
 
 
-// prevents draging and carrying at the same ACE_time
+// prevents draging and carrying at the same time
 _unit setVariable [QGVAR(isCarrying), true, true];
 
 // required for aborting animation

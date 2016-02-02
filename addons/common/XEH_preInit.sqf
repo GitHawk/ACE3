@@ -10,7 +10,6 @@ PREP(addToInventory);
 PREP(assignedItemFix);
 PREP(assignObjectsInList);
 PREP(ambientBrightness);
-PREP(applyForceWalkStatus);
 PREP(ASLToPosition);
 PREP(binarizeNumber);
 PREP(blurScreen);
@@ -53,8 +52,8 @@ PREP(fixLoweredRifleAnimation);
 PREP(fixPosition);
 PREP(getAllDefinedSetVariables);
 PREP(getAllGear);
-PREP(getCaptivityStatus);
 PREP(getDeathAnim);
+PREP(getCaptivityStatus);
 PREP(getDefaultAnim);
 PREP(getDefinedVariable);
 PREP(getDefinedVariableDefault);
@@ -74,6 +73,7 @@ PREP(getNumberFromMissionSQM);
 PREP(getNumberMagazinesIn);
 PREP(getPitchBankYaw);
 PREP(getSettingData);
+PREP(getStaminaBarControl);
 PREP(getStringFromMissionSQM);
 PREP(getTargetAzimuthAndInclination);
 PREP(getTargetDistance);
@@ -115,6 +115,7 @@ PREP(isInBuilding);
 PREP(isModLoaded);
 PREP(isPlayer);
 PREP(isTurnedOut);
+PREP(isUnderwater);
 PREP(letterToCode);
 PREP(lightIntensityFromObject);
 PREP(loadPerson);
@@ -133,11 +134,13 @@ PREP(numberToDigitsString);
 PREP(numberToString);
 PREP(onAnswerRequest);
 PREP(owned);
+PREP(parseList);
 PREP(player);
 PREP(playerSide);
 PREP(positionToASL);
 PREP(progressBar);
 PREP(readSettingFromModule);
+PREP(readSettingsFromParamsArray);
 PREP(receiveRequest);
 PREP(removeCanInteractWithCondition);
 PREP(removeSpecificMagazine);
@@ -165,6 +168,14 @@ PREP(setVariableJIP);
 PREP(setVariablePublic);
 PREP(setVolume);
 PREP(sortAlphabeticallyBy);
+PREP(showHud);
+PREP(statusEffect_addType);
+PREP(statusEffect_get);
+PREP(statusEffect_localEH);
+PREP(statusEffect_resetVariables);
+PREP(statusEffect_respawnEH);
+PREP(statusEffect_sendEffects);
+PREP(statusEffect_set);
 PREP(stringCompare);
 PREP(stringToColoredText);
 PREP(stringRemoveWhiteSpace);
@@ -222,6 +233,7 @@ PREP(getTurretCopilot);
 PREP(getDoorTurrets);
 PREP(getTurretsFFV);
 PREP(getTurretsOther);
+PREP(hasHatch);
 
 // missing inventory commands
 PREP(binocularMagazine);
@@ -288,6 +300,7 @@ PREP(hashListSet);
 PREP(hashListPush);
 
 GVAR(syncedEvents) = HASH_CREATE;
+GVAR(showHudHash) = [] call FUNC(hashCreate);
 
 //GVARS for execNextFrame and waitAndExec and waitUntilAndExecute
 GVAR(waitAndExecArray) = [];
@@ -309,6 +322,8 @@ if (isServer) then {
     call FUNC(loadSettingsOnServer);
 };
 
+GVAR(statusEffect_Names) = [];
+GVAR(statusEffect_isGlobal) = [];
 
 //////////////////////////////////////////////////
 // Set up PlayerChanged eventhandler for pre init
@@ -322,8 +337,7 @@ if (hasInterface) then {
     // PFH to update the ACE_player variable
     GVAR(PreInit_playerChanged_PFHID) = [{
         if !(ACE_player isEqualTo (call FUNC(player))) then {
-            private ["_oldPlayer"];
-            _oldPlayer = ACE_player;
+            private _oldPlayer = ACE_player;
 
             ACE_player = call FUNC(player);
             uiNamespace setVariable ["ACE_player", ACE_player];
